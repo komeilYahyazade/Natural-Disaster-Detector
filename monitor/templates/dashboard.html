@@ -1,0 +1,190 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'monitor/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'semantic.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+{% block content %}
+  <div id="header">
+    <div id="icon-container">
+      <a id="icon-button" href="{% url 'preferences' %}"><i id="icon" class="material-icons">settings</i></a>
+    </div>
+    <h1 id="title">🙶Stay Ahead of the Storms!🙷</h1>
+    <h1 id="subtitle">Live dashboard for natural disaster monitoring</h1>
+  </div>
+
+  <div id="dashboard">
+
+    <div id="earthquake" class="ui segments">
+        <h2 id="earthquackes-alert" class="ui segment font" class="ui header">It's safe out there! No earthquackes!</h2>
+        <div id="canvas-holder" class="ui segment"><canvas id="seismograph" width="1000" height="400"></canvas></div>
+    </div>
+
+
+    <div id="volc-flood">
+
+        <div id="volcano" class="ui segments">
+            <h2 id="volcano-alert" class="ui segment font" class="ui header">The volcano is chill for now!</h2>
+            <div id="report" class="ui segment">
+              <h2 id="temperature" class="value">10</h2>
+              <h2 id="unit">℃</h2>
+            </div>
+        </div>
+
+        <div id="flood" class="ui segments">
+            <h2 id="flood-alert" class="ui segment font" class="ui header">Humidity is down today!</h2>
+            <div id="report" class="ui segment">
+              <h2 id="humidity" class="value">2.5</h2>
+              <h2 id="unit">%</h2>
+            </div>
+        </div>
+
+    </div>
+  </div>
+  
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+  <script>
+    Chart.defaults.color = "#6e632f";
+    const ctx = document.getElementById('seismograph').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+        labels: [],  // we'll update this later
+        datasets: [{
+                label: ' X Axis ',
+                data: [],
+                borderColor: '#ff6e40',
+                backgroundColor: '#ff6e40',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 0,
+                borderWidth: 2,
+            }, {
+                label: ' Y Axis ',
+                data: [],
+                borderColor: '#1e3d59',
+                backgroundColor: '#1e3d59',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 0,
+                borderWidth: 2,
+            }, {
+                label: ' Z Axis ',
+                data: [],
+                borderColor: '#ffc13b',
+                backgroundColor: '#ffc13b',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 0,
+                borderWidth: 2,
+            }],
+        },
+        options: {
+            responsive: false,
+            scales: {
+                x: { display: false },  // we don't need the X axis labels
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        usePointStyle: true,
+                        font: {
+                            family: "monospace",
+                        },
+                      },
+                    }
+            },
+        },
+    });
+
+    function updateChart() {
+        // fetch the latest X values from the server
+        $.ajax({
+        url: 'accelerations',
+        dataType: 'json',
+        success: function(data) {
+            // only keep the last 100 values
+            const num_points = Math.min(data.length, 100);
+            const labels = Array.from({ length: num_points }, (_, i) => i);
+            const x_values = data.slice(-num_points).map(datum => datum.x);
+            const y_values = data.slice(-num_points).map(datum => datum.y);
+            const z_values = data.slice(-num_points).map(datum => datum.z);
+
+            // update the chart with the new data
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = x_values;
+            chart.data.datasets[1].data = y_values;
+            chart.data.datasets[2].data = z_values;
+            chart.update();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error fetching data:', textStatus, errorThrown);
+        }
+        });
+    }
+
+    updateChart();
+
+    // update the chart every 2 seconds (adjust as needed)
+    setInterval(updateChart, 1000);
+  </script>
+    
+  <script>
+      function updateEarthquakeStatus() {
+    fetch('earthquake/')
+      .then(response => response.json())
+      .then(data => {
+        const statusText = data.status ? "Caution! Earthquake detected!" : "It's safe out there! No earthquackes!";
+        document.getElementById('earthquackes-alert').innerText = statusText;
+        const statusColor = data.status ? "#ff6e40" : "#6e632f";
+        document.getElementById("earthquackes-alert").style.color = statusColor;
+      })
+      .catch(error => console.error(error));
+  }
+  
+  updateEarthquakeStatus();
+
+  setInterval(updateEarthquakeStatus, 1000);
+
+  function updateVolcanoStatus() {
+    fetch('volcanic_erruption/')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        document.getElementById('temperature').innerText = data.value;
+
+        const statusText = data.status ? "Caution! Volcanic erruption detected!" : "The volcano is chill for now!";
+        document.getElementById('volcano-alert').innerText = statusText;
+        const statusColor = data.status ? "#ff6e40" : "#6e632f";
+        document.getElementById("volcano-alert").style.color = statusColor;
+      })
+      .catch(error => console.error(error));
+  }
+  
+  updateVolcanoStatus();
+
+  setInterval(updateVolcanoStatus, 1000);
+
+  function updateFloodStatus() {
+    fetch('extreme_humidity/')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('humidity').innerText = data.value;
+
+        const statusText = data.status ? "Caution! Humidity too high!" : "Humidity is fine!";
+        document.getElementById('flood-alert').innerText = statusText;
+        const statusColor = data.status ? "#ff6e40" : "#6e632f";
+        document.getElementById("flood-alert").style.color = statusColor;
+      })
+      .catch(error => console.error(error));
+  }
+  
+  updateFloodStatus();
+
+  setInterval(updateFloodStatus, 1000);
+  </script>
+{% endblock %}
+

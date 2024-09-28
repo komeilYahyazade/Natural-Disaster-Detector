@@ -1,0 +1,37 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'monitor/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'semantic.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+{% block content %}
+  <div id="header">
+    <div id="icon-container">
+      <a id="icon-button" href="{% url 'home' %}"><i id="icon" class="material-icons">space_dashboard</i></a>
+    </div>
+    <h1 id="title">🙶Stay Ahead of the Storms!🙷</h1>
+    <h1 id="subtitle">Live dashboard for natural disaster monitoring</h1>
+  </div>
+
+    <ul {% if messages %} class="ui olive message" {% endif %} id="success-message">
+        {% for message in messages %}
+            <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    </ul>
+
+  <div id="form-holder-holder">
+    <div id="form-holder" class="ui segment">
+      <h2>Customize Your Settings</h2>
+      <form method="post" class="ui form" id="form">
+        {% csrf_token %}
+        <div id="p-holder">
+          {{form.as_p}}
+          <button type="submit" class="ui button" style="margin-top: 1.5em;">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+
+{% endblock %}
+

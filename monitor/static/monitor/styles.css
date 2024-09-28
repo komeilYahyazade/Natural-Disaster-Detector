@@ -1,0 +1,158 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    caret-color: transparent;
+}
+
+#header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 3em;
+    padding-top: 1.5em;
+}
+
+#title {
+    text-align: center;
+    width: 100%;
+    font-family: fantasy;
+    font-weight: 100;
+    font-size: 3em;
+    color: #6e632f;
+}
+
+#subtitle {
+    text-align: center;
+    width: 100%;
+    font-family: monospace;
+    font-weight: 10;
+    color: #C5B358;
+    margin-top: 0;
+}
+
+#dashboard {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+#earthquake {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 7;
+    justify-content: center;
+    align-items: center;
+    margin: 2em;
+    margin-top: 0;
+}
+
+#volc-flood {
+    flex-grow: 1;
+    margin: 2em;
+    margin-left: 0;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+}
+
+#volcano {
+    flex-grow: 1;
+}
+
+#flood {   
+    flex-grow: 1;
+}
+
+.font {
+    color: #6e632f;
+}
+
+#canvas-holder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2em;
+}
+
+#seismograph {
+    padding-top: 2em;
+}
+
+#earthquackes-alert {
+    padding: 2em;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+#report {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2em;
+}
+
+.value {
+    font-family: fantasy;
+    font-size: 8em;
+    font-weight: 300;
+    color: #C5B358;
+}
+
+#unit {
+    font-family: fantasy;
+    font-weight: 300;
+    color: #C5B358;
+}
+
+#icon-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 2em;
+    margin-right: 2em; /* Adjust as needed */
+}
+
+#icon-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+#icon {
+    font-size: 3em;
+    color: #6e632f;
+}
+
+#form-holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30%;
+    padding: 3em;
+}
+
+#form-holder-holder {
+    caret-color: #6e632f;
+    display: flex;
+    justify-content: center;
+    margin: 4em;
+    margin-top: 0;
+}
+
+#p-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+}
+
+#success-message {
+    margin-left: 2em;
+    margin-right: 2em;
+    height: 40px;
+    margin-top: -1em;
+    margin-bottom: 2em;
+}
